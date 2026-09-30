@@ -1,0 +1,18 @@
+# Environment / secrets
+.env
+
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# ML generated models
+ml_models/*.joblib
+ml_models/*.pkl
+
+# Dataset
+data/*.csv
+data/*.zip
+
+# IDE
+.vscode/
