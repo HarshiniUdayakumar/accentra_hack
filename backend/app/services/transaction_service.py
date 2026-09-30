@@ -53,11 +53,20 @@ def process_new_transaction(
         transactions=history_records,
     )
 
+    # Evaluate registered rules against transaction and retrieved history
+    rule_results_objs = evaluate_transaction_rules(
+        transaction=transaction, history=history_records
+    )
+    rule_results = [r.model_dump(mode="json") for r in rule_results_objs]
+
+
     return TransactionProcessResponse(
         message=message,
         transaction=transaction,
         customer_history=customer_history,
+        rule_results=rule_results,
     )
+
 
 
 def evaluate_transaction_rules(
@@ -129,6 +138,11 @@ class TransactionService:
             engine=engine,
             history_limit=history_limit,
         )
+
+    def get_recent_transactions(self, limit: int = 100) -> List[Dict[str, Any]]:
+        """Retrieve recent transactions from MySQL."""
+        from app.database.connection import get_recent_transactions
+        return get_recent_transactions(limit=limit)
 
     def process_transaction(self, transaction_data: Dict[str, Any]) -> Dict[str, Any]:
         """Legacy placeholder for dict-based processing."""

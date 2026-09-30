@@ -68,3 +68,7 @@ class TransactionProcessResponse(BaseModel):
     message: str
     transaction: TransactionCreate
     customer_history: CustomerHistory
+    rule_results: Optional[List[Dict[str, Any]]] = Field(
+        default_factory=list, description="RuleResult objects from evaluated fraud rules"
+    )
+

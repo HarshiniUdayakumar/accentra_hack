@@ -110,3 +110,40 @@ def get_customer_history(
     except Error as e:
         print(f"[Database Error] Failed to fetch customer history for {customer_id}: {e}")
         return []
+
+
+def get_recent_transactions(limit: int = 100) -> List[Dict[str, Any]]:
+    """Retrieve the most recent transactions from the database.
+
+    Args:
+        limit: Maximum number of transactions to return (default: 100).
+
+    Returns:
+        List of transaction records as dictionaries.
+    """
+    query = """
+        SELECT
+            transaction_id,
+            customer_id,
+            CAST(amount AS DOUBLE) AS amount,
+            timestamp,
+            CAST(latitude AS DOUBLE) AS latitude,
+            CAST(longitude AS DOUBLE) AS longitude,
+            location_name,
+            merchant,
+            transaction_type,
+            channel,
+            created_at
+        FROM transactions
+        ORDER BY timestamp DESC
+        LIMIT %s;
+    """
+    try:
+        with get_cursor(dictionary=True) as cursor:
+            cursor.execute(query, (limit,))
+            records = cursor.fetchall()
+            return records
+    except Error as e:
+        print(f"[Database Error] Failed to fetch recent transactions: {e}")
+        return []
+
